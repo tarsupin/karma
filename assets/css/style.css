@@ -1,0 +1,28 @@
+
+/************************
+****** Page Layout ******
+************************/
+
+@media screen and (min-width:1401px) {
+	#content { background-color:white; padding:12px; }
+}
+
+@media screen and (min-width:921px) and (max-width:1400px) {
+	#content { background-color:white; padding:12px; }
+}
+
+@media screen and (min-width:501px) and (max-width:920px) {
+	#content { background-color:white; padding:10px; }
+}
+
+@media screen and (max-width:500px) {
+	#content { background-color:white; padding:8px; }
+}
+
+/************************
+****** Chat System ******
+************************/
+
+#chat-inner { overflow-y:scroll; max-height:450px; border:solid 1px #505050; }
+#chat-inner>div:nth-child(even) { background-color:#f5fbf5; }
+#chat-inner>div:nth-child(odd) { background-color:#f3f3f3; }
