@@ -17,6 +17,18 @@ This plugin allows the system to create, assign, and work with user flair.
 abstract class AppFlair {
 	
 	
+/****** Get the flair data ******/
+	public static function getData
+	(
+		$flairID		// <int> The flair ID to pull data from.
+	)					// RETURNS <str:mixed> the data of the flair, or array() on failure.
+	
+	// $flairData = AppFlair::getData($flairID);
+	{
+		return Database::selectOne("SELECT * FROM flair WHERE id=? LIMIT 1", array($flairID));
+	}
+	
+	
 /****** Create a new flair type ******/
 	public static function create
 	(
@@ -51,11 +63,12 @@ abstract class AppFlair {
 	(
 		$uniID				// <int> The UniID of the user to assign flair to.
 	,	$flairID			// <int> The flair ID to assign to the user.
+	,	$expires = 0		// <int> The timestamp of when the flair will expire (or 0 if it doesn't).
 	)						// RETURNS <bool> TRUE on success, FALSE on failure.
 	
-	// AppFlair::assignByID($uniID, $flairID);
+	// AppFlair::assignByID($uniID, $flairID, [$expires]);
 	{
-		return Database::query("REPLACE INTO users_flair (uni_id, flair_id) VALUES (?, ?)", array($uniID, $flairID));
+		return Database::query("REPLACE INTO users_flair (uni_id, flair_id, expires) VALUES (?, ?, ?)", array($uniID, $flairID, $expires));
 	}
 	
 	
@@ -65,13 +78,14 @@ abstract class AppFlair {
 		$uniID				// <int> The UniID of the user to assign flair to.
 	,	$siteHandle			// <str> The site handle that assigned this flair.
 	,	$title				// <str> The title of the flair to assign.
+	,	$expires = 0		// <int> The timestamp of when the flair will expire (or 0 if it doesn't).
 	)						// RETURNS <bool> TRUE on success, FALSE on failure.
 	
-	// AppFlair::assignByType($uniID, $siteHandle, $title);
+	// AppFlair::assignByType($uniID, $siteHandle, $title, [$expires]);
 	{
 		if($flairID = self::getIDByType($siteHandle, $title))
 		{
-			return AppFlair::assignByID($uniID, $flairID);
+			return AppFlair::assignByID($uniID, $flairID, $expires);
 		}
 		
 		return false;
@@ -88,6 +102,36 @@ abstract class AppFlair {
 	// AppFlair::unassignByID($uniID, $flairID);
 	{
 		return Database::query("DELETE FROM users_flair WHERE uni_id=? AND flair_id=? LIMIT 1", array($uniID, $flairID));
+	}
+	
+	
+/****** Pull all of a user's flair rewards and compile them ******/
+	public static function compileUserFlairRewards
+	(
+		$uniID			// <int> The UniID to get the flair rewards for.
+	)					// RETURNS <str:mixed> the reward results.
+	
+	// $rewardResults = AppFlair::compileUserFlairRewards($uniID);
+	{
+		// Prepare Values
+		$rewards = array(
+			"free_auro_per_day" => 0
+		);
+		
+		// Get the list of flair for the user
+		$flairList = Database::selectMultiple("SELECT settings_json FROM users_flair uf INNER JOIN flair f ON uf.flair_id=f.id WHERE uf.uni_id=?", array($uniID));
+		
+		foreach($flairList as $flair)
+		{
+			$settingData = json_decode($flair['settings_json'], true);
+			
+			if(isset($settingData['free_auro_per_day']))
+			{
+				$rewards["free_auro_per_day"] += $settingData['free_auro_per_day'];
+			}
+		}
+		
+		return $rewards;
 	}
 	
 }

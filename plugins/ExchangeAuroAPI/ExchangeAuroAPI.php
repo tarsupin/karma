@@ -17,6 +17,7 @@ This API allows another site to exchange auro between two users.
 	,	"uni_id_to"		=> $uniIDTo
 	,	"auro"			=> $auroAmount
 	,	"desc"			=> $desc			// Optional: add a description to record the transaction.
+	,	"site_name"		=> $siteName		// Optional: If recording the transaction, set the site name.
 	);
 	
 	// Connect to this API from UniFaction
@@ -58,8 +59,9 @@ class ExchangeAuroAPI extends API {
 		// Prepare Values
 		$desc = isset($this->data['desc']) ? Sanitize::safeword($this->data['desc']) : "";
 		$record = $desc ? true : false;
+		$siteName = isset($this->data['site_name']) ? $this->data['site_name'] : '';
 		
-		return AppAuro::exchangeAuro((int) $this->data['uni_id_from'], (int) $this->data['uni_id_to'], (int) $this->data['auro'], $record, $desc);
+		return AppAuro::exchangeAuro((int) $this->data['uni_id_from'], (int) $this->data['uni_id_to'], (int) $this->data['auro'], $record, $desc, $siteName);
 	}
 	
 }

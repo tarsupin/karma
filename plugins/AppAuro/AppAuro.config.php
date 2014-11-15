@@ -43,6 +43,7 @@ class AppAuro_config {
 			`uni_id`				int(10)			unsigned	NOT NULL	DEFAULT '0',
 			`date_exchange`			int(10)			unsigned	NOT NULL	DEFAULT '0',
 			
+			`site_name`				varchar(22)					NOT NULL	DEFAULT '',
 			`other_id`				int(10)			unsigned	NOT NULL	DEFAULT '0',
 			`amount`				int(10)			unsigned	NOT NULL	DEFAULT '0',
 			

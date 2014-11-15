@@ -16,6 +16,7 @@ This API allows users on external sites to spend auro.
 		"uni_id"	=> $uniID
 	,	"auro"		=> $auroAmount
 	,	"desc"		=> $desc			// Optional: add a description to record the transaction.
+	,	"site_name"	=> $siteName		// Optional: If recording the transaction, set the site name.
 	);
 	
 	// Connect to this API from UniFaction
@@ -57,8 +58,9 @@ class SpendAuroAPI extends API {
 		// Prepare Values
 		$desc = isset($this->data['desc']) ? Sanitize::safeword($this->data['desc']) : "";
 		$record = $desc ? true : false;
+		$siteName = isset($this->data['site_name']) ? $this->data['site_name'] : '';
 		
-		return AppAuro::spendAuro((int) $this->data['uni_id'], (int) $this->data['auro'], $record, $desc);
+		return AppAuro::spendAuro((int) $this->data['uni_id'], (int) $this->data['auro'], $record, $desc, $siteName);
 	}
 	
 }

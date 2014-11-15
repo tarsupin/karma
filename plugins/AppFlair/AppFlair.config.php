@@ -45,9 +45,10 @@ class AppFlair_config {
 		(
 			`uni_id`				int(10)			unsigned	NOT NULL	DEFAULT '0',
 			`flair_id`				int(10)			unsigned	NOT NULL	DEFAULT '0',
+			`expires`				int(10)			unsigned	NOT NULL	DEFAULT '0',
 			
 			UNIQUE (`uni_id`, `flair_id`)
-		) ENGINE=InnoDB DEFAULT CHARSET=utf8 PARTITION BY KEY(uni_id) PARTITIONS 5;
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8 PARTITION BY KEY(uni_id) PARTITIONS 7;
 		");
 		
 		return $this->isInstalled();

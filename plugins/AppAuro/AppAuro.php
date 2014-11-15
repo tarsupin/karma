@@ -44,7 +44,7 @@ abstract class AppAuro {
 	
 	// $auroRecords = AppAuro::getRecords($uniID, [$page], [$numRows]);
 	{
-		return Database::selectMultiple("SELECT * FROM auro_records WHERE uni_id=? ORDER BY date_exchange DESC LIMIT " . (($page - 1) * $numRows) . ", " . ($numRows + 0), array($uniID));
+		return Database::selectMultiple("SELECT a.*, u.handle FROM auro_records a LEFT JOIN users u ON a.other_id=u.uni_id WHERE a.uni_id=? ORDER BY a.date_exchange DESC LIMIT " . (($page - 1) * $numRows) . ", " . ($numRows + 0), array($uniID));
 	}
 	
 	
@@ -91,9 +91,10 @@ abstract class AppAuro {
 	,	$auro			// <int> The amount of auro to give the user.
 	,	$record = false	// <bool> TRUE if you want to record this transaction.
 	,	$desc = ""		// <str> The description for acquiring auro, if applicable.
+	,	$siteName = ""	// <str> The name of the site it's being transferred on.
 	)					// RETURNS <bool> TRUE on successfully added, FALSE on failure.
 	
-	// $success = AppAuro::grantAuro($uniID, $auro, [$record], [$desc]);
+	// $success = AppAuro::grantAuro($uniID, $auro, [$record], [$desc], [$siteName]);
 	{
 		// Record the transaction
 		if(!Database::query("UPDATE users_auro SET auro=auro+? WHERE uni_id=? LIMIT 1", array($auro, $uniID)))
@@ -112,7 +113,7 @@ abstract class AppAuro {
 		// Record the transaction
 		if($record)
 		{
-			self::record($uniID, 0, $auro, $desc);
+			self::record($uniID, 0, $auro, $desc, $siteName);
 		}
 		
 		return true;
@@ -126,9 +127,10 @@ abstract class AppAuro {
 	,	$auro			// <int> The amount of auro to give the user.
 	,	$record = true	// <bool> TRUE if you want to record this purchase.
 	,	$desc = ""		// <str> The description to associate with the purchase.
+	,	$siteName = ""	// <str> The name of the site it's being transferred on.
 	)					// RETURNS <bool> TRUE on successful spend (had sufficient auro), FALSE on failure.
 	
-	// $success = AppAuro::spendAuro($uniID, $auro, [$record], [$desc]);
+	// $success = AppAuro::spendAuro($uniID, $auro, [$record], [$desc], [$siteName]);
 	{
 		if($checkAuro = (int) Database::selectValue("SELECT auro FROM users_auro WHERE uni_id=? LIMIT 1", array($uniID)))
 		{
@@ -140,7 +142,7 @@ abstract class AppAuro {
 				// Record the transaction
 				if($record)
 				{
-					self::record($uniID, 0, $auro, $desc);
+					self::record($uniID, 0, $auro, $desc, $siteName);
 				}
 				
 				return $pass;
@@ -159,9 +161,10 @@ abstract class AppAuro {
 	,	$auro			// <int> The amount of auro to exchange.
 	,	$record = true	// <bool> TRUE if you want to record this transaction.
 	,	$desc = ""		// <str> The description to associate with the transaction.
+	,	$siteName = ""	// <str> The name of the site it's being transferred on.
 	)					// RETURNS <bool> TRUE on successful exchange (had sufficient auro), FALSE on failure.
 	
-	// $success = AppAuro::exchangeAuro($uniIDFrom, $uniIDTo, $auro);
+	// $success = AppAuro::exchangeAuro($uniIDFrom, $uniIDTo, $auro, [$record], [$desc], [$siteName]);
 	{
 		// Cannot exchange to yourself
 		if($uniIDFrom == $uniIDTo) { return false; }
@@ -192,7 +195,7 @@ abstract class AppAuro {
 				// Record the transaction
 				if($record)
 				{
-					self::record($uniIDFrom, $uniIDTo, $auro, $desc);
+					self::record($uniIDFrom, $uniIDTo, $auro, $desc, $siteName);
 				}
 				
 				return Database::endTransaction($pass);
@@ -206,13 +209,14 @@ abstract class AppAuro {
 /****** Records a transaction ******/
 	public static function record
 	(
-		$uniID		// <int> The Uni-Account to send currency.
-	,	$uniIDOther	// <int> The Uni-Account to receive currency (0 for the server).
-	,	$auro		// <int> How much currency was added to the recipient.
-	,	$desc = ""	// <str> A brief description about the transaction's purpose.
-	)				// RETURNS <bool> TRUE on success, or FALSE on error.
+		$uniID			// <int> The Uni-Account to send currency.
+	,	$uniIDOther		// <int> The Uni-Account to receive currency (0 for the server).
+	,	$auro			// <int> How much currency was added to the recipient.
+	,	$desc = ""		// <str> A brief description about the transaction's purpose.
+	,	$siteName = ""	// <str> The name of the site it's being transferred on.
+	)					// RETURNS <bool> TRUE on success, or FALSE on error.
 	
-	// Currency::record($user['id'], $otherUser['id'], 100, "Giftbox Sale");
+	// Currency::record($uniID, $uniIDOther, $auro, $desc, [$siteName]);
 	{
 		if($uniID === false or $uniIDOther === false) { return false; }
 		
@@ -221,11 +225,11 @@ abstract class AppAuro {
 		$pass2 = true;
 		
 		// Run the record keeping
-		$pass1 = Database::query("INSERT INTO `auro_records` (`uni_id`, `other_id`, `amount`, `description`, `date_exchange`) VALUES (?, ?, ?, ?, ?)", array($uniID, $uniIDOther, $auro, Sanitize::safeword($desc), $timestamp));
+		$pass1 = Database::query("INSERT INTO `auro_records` (`uni_id`, `site_name`, `other_id`, `amount`, `description`, `date_exchange`) VALUES (?, ?, ?, ?, ?, ?)", array($uniID, $siteName, $uniIDOther, $auro, Sanitize::safeword($desc), $timestamp));
 		
 		if($uniIDOther !== 0)
 		{
-			$pass2 = Database::query("INSERT INTO `auro_records` (`uni_id`, `other_id`, `amount`, `description`, `date_exchange`) VALUES (?, ?, ?, ?, ?)", array($uniIDOther, $uniID, 0 - $auro, Sanitize::safeword($desc), $timestamp));
+			$pass2 = Database::query("INSERT INTO `auro_records` (`uni_id`, `site_name`, `other_id`, `amount`, `description`, `date_exchange`) VALUES (?, ?, ?, ?, ?, ?)", array($uniIDOther, $siteName, $uniID, 0 - $auro, Sanitize::safeword($desc), $timestamp));
 		}
 		
 		return ($pass1 && $pass2);
