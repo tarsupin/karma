@@ -37,6 +37,21 @@ class AppAuro_config {
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8 PARTITION BY KEY(uni_id) PARTITIONS 31;
 		");
 		
+		Database::exec("
+		CREATE TABLE IF NOT EXISTS `auro_records`
+		(
+			`uni_id`				int(10)			unsigned	NOT NULL	DEFAULT '0',
+			`date_exchange`			int(10)			unsigned	NOT NULL	DEFAULT '0',
+			
+			`other_id`				int(10)			unsigned	NOT NULL	DEFAULT '0',
+			`amount`				int(10)			unsigned	NOT NULL	DEFAULT '0',
+			
+			`description`			varchar(64)					NOT NULL	DEFAULT '',
+			
+			INDEX (`uni_id`, `date_exchange`)
+		) ENGINE=InnoDB DEFAULT CHARSET=utf8 PARTITION BY KEY(uni_id) PARTITIONS 63;
+		");
+		
 		return $this->isInstalled();
 	}
 	
@@ -48,7 +63,10 @@ class AppAuro_config {
 	// $plugin->isInstalled();
 	{
 		// Make sure the newly installed tables exist
-		return DatabaseAdmin::columnsExist("users_auro", array("uni_id", "auro"));
+		$pass1 = DatabaseAdmin::columnsExist("users_auro", array("uni_id", "auro"));
+		$pass2 = DatabaseAdmin::columnsExist("currency_records", array("uni_id", "amount"));
+		
+		return ($pass1 and $pass2);
 	}
 	
 }

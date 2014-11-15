@@ -23,11 +23,18 @@ echo '
 
 //$success = AppAuro::exchangeAuro(Me::$id, 2, 5);
 //var_dump($success);
-/*
+
+//$success = AppAuro::grantAuro(Me::$id, 10, true, "Got some auro.");
+//$success = AppAuro::spendAuro(Me::$id, 20, true, "Purchased a pet.");
+
 $auroData = AppAuro::getData(Me::$id);
 
 var_dump($auroData);
-*/
+
+$auroRecords = AppAuro::getRecords(Me::$id, 1, 20);
+
+var_dump($auroRecords);
+
 echo '
 </div>';
 

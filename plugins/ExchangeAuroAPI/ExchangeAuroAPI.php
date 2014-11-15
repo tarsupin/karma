@@ -12,7 +12,12 @@ This API allows another site to exchange auro between two users.
 ------------------------------
 	
 	// Prepare the Packet
-	$packet = array("uni_id_from" => $uniIDFrom, "uni_id_to" => $uniIDTo, "auro" => $auroAmount);
+	$packet = array(
+		"uni_id_from"	=> $uniIDFrom
+	,	"uni_id_to"		=> $uniIDTo
+	,	"auro"			=> $auroAmount
+	,	"desc"			=> $desc			// Optional: add a description to record the transaction.
+	);
 	
 	// Connect to this API from UniFaction
 	$success = Connect::to("karma", "ExchangeAuroAPI", $packet);
@@ -50,7 +55,11 @@ class ExchangeAuroAPI extends API {
 			return false;
 		}
 		
-		return AppAuro::exchangeAuro((int) $this->data['uni_id_from'], (int) $this->data['uni_id_to'], (int) $this->data['auro']);
+		// Prepare Values
+		$desc = isset($this->data['desc']) ? Sanitize::safeword($this->data['desc']) : "";
+		$record = $desc ? true : false;
+		
+		return AppAuro::exchangeAuro((int) $this->data['uni_id_from'], (int) $this->data['uni_id_to'], (int) $this->data['auro'], $record, $desc);
 	}
 	
 }

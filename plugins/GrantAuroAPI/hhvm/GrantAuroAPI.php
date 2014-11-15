@@ -12,7 +12,11 @@ This API allows another site to grant auro to a user.
 ------------------------------
 	
 	// Prepare the Packet
-	$packet = array("uni_id" => $uniID, "auro" => $auroAmount);
+	$packet = array(
+		"uni_id"	=> $uniID
+	,	"auro"		=> $auroAmount
+	,	"desc"		=> string $desc			// <str> Optional: add a description to record the transaction.
+	);
 	
 	// Connect to this API from UniFaction
 	$success = Connect::to("karma", "GrantAuroAPI", $packet);
@@ -50,7 +54,11 @@ class GrantAuroAPI extends API {
 			return false;
 		}
 		
-		return AppAuro::grantAuro((int) $this->data['uni_id'], (int) $this->data['auro']);
+		// Prepare Values
+		$desc = isset($this->data['desc']) ? Sanitize::safeword($this->data['desc']) : "";
+		$record = $desc ? true : false;
+		
+		return AppAuro::grantAuro((int) $this->data['uni_id'], (int) $this->data['auro'], $record, $desc);
 	}
 	
 }
