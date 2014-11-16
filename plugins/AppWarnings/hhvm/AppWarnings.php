@@ -17,6 +17,18 @@ This plugin allows the system to create, assign, and work with user warnings.
 abstract class AppWarnings {
 	
 	
+/****** Get the warning data ******/
+	public static function getData
+	(
+		int $warningID		// <int> The warning ID to pull data from.
+	): array <str, mixed>					// RETURNS <str:mixed> the data of the warning, or array() on failure.
+	
+	// $warningData = AppFlair::getData($warningID);
+	{
+		return Database::selectOne("SELECT * FROM warnings WHERE id=? LIMIT 1", array($warningID));
+	}
+	
+	
 /****** Create a new warning type ******/
 	public static function create
 	(

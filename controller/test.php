@@ -18,9 +18,6 @@ echo '
 echo '
 <h3>UniFaction Karma System</h3>';
 
-
-
-
 echo '
 </div>';
 

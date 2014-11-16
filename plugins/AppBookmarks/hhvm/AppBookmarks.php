@@ -25,7 +25,7 @@ abstract class AppBookmarks {
 	public static function getUserList
 	(
 		int $uniID				// <int> The UniID to retrieve bookmarks for.
-	): int						// RETURNS <int> The ID of the bookmark, or 0 on failure.
+	): array <str, array<str, str>>						// RETURNS <str:[str:str]> The list of bookmarks.
 	
 	// $bookmarkList = AppBookmarks::getUserList($uniID);
 	{
@@ -88,7 +88,7 @@ abstract class AppBookmarks {
 		{
 			foreach($groupList as $title => $url)
 			{
-				AppBookmarks::assignByType($uniID, "Communities", "Avatar");
+				AppBookmarks::assignByType($uniID, $groupName, $title);
 			}
 		}
 		
@@ -116,12 +116,24 @@ abstract class AppBookmarks {
 	public static function getIDByType
 	(
 		string $group		// <str> The bookmark group that the bookmark belongs to.
-	,	string $title		// <str> The title of the bookmark to assign.
+	,	string $title		// <str> The title of the bookmark to retrieve.
 	): int				// RETURNS <int> the ID of the bookmark, or 0 on failure.
 	
 	// $bookmarkID = AppBookmarks::getIDByType($group, $title);
 	{
 		return (int) Database::selectValue("SELECT id FROM bookmarks WHERE book_group=? AND title=? LIMIT 1", array($group, $title));
+	}
+	
+	
+/****** Get the bookmark ID by the URL ******/
+	public static function getIDByURL
+	(
+		string $url		// <str> The URL of the bookmark to retrieve.
+	): int				// RETURNS <int> the ID of the bookmark, or 0 on failure.
+	
+	// $bookmarkID = AppBookmarks::getIDByURL($url);
+	{
+		return (int) Database::selectValue("SELECT id FROM bookmarks WHERE url=? LIMIT 1", array($url));
 	}
 	
 	
@@ -157,6 +169,28 @@ abstract class AppBookmarks {
 	// AppBookmarks::assignByType($uniID, $group, $title);
 	{
 		if($bookmarkID = self::getIDByType($group, $title))
+		{
+			return AppBookmarks::assignByID($uniID, $bookmarkID);
+		}
+		
+		return false;
+	}
+	
+	
+/****** Assign bookmark to a user based on the bookmark URL (instead of ID) ******/
+	public static function assignByURL
+	(
+		int $uniID		// <int> The UniID of the user to assign bookmark to.
+	,	string $url		// <str> The bookmark group that the bookmark belongs to.
+	): bool				// RETURNS <bool> TRUE on success, FALSE on failure.
+	
+	// AppBookmarks::assignByURL($uniID, $url);
+	{
+		$parseURL = URL::parse($url, true);
+		
+		$url = "http://" . $parseURL['host'];
+		
+		if($bookmarkID = (int) Database::selectValue("SELECT id FROM bookmarks WHERE url=? LIMIT 1", array($url)))
 		{
 			return AppBookmarks::assignByID($uniID, $bookmarkID);
 		}

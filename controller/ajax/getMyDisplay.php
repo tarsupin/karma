@@ -19,7 +19,13 @@ if($_POST['enc'] != Security::jsEncrypt($_POST['username']))
 if(!$uniID = User::getIDByHandle($_POST['username']))
 {
 	// Attempt to silently register the user so that the functions can work appropriately
-	if(!User::silentRegister($uniID))
+	if(!User::silentRegister($_POST['username']))
+	{
+		exit;
+	}
+	
+	// If you were unable to create a UniID, end here
+	if(!$uniID = User::getIDByHandle($_POST['username']))
 	{
 		exit;
 	}
@@ -35,7 +41,7 @@ if(!$bookmarkList = AppBookmarks::getUserList($uniID))
 AppAuro::allotAuro($uniID);
 
 // Get the user's auro count
-$auro = Database::selectValue("SELECT auro FROM users_auro WHERE uni_id=? LIMIT 1", array($uniID));
+$auro = (int) Database::selectValue("SELECT auro FROM users_auro WHERE uni_id=? LIMIT 1", array($uniID));
 
 // Display the bookmark list
 echo json_encode(array("auro" => number_format($auro), "bookmarks" => $bookmarkList)); exit;

@@ -58,7 +58,7 @@ class AppBookmarks_config {
 	{
 		// Make sure the newly installed tables exist
 		$pass1 = DatabaseAdmin::columnsExist("bookmarks", array("id", "title"));
-		$pass2 = DatabaseAdmin::columnsExist("user_bookmarks", array("uni_id", "bookmark_id"));
+		$pass2 = DatabaseAdmin::columnsExist("users_bookmarks", array("uni_id", "bookmark_id"));
 		
 		return ($pass1 and $pass2);
 	}

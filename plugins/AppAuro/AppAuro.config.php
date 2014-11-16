@@ -65,7 +65,7 @@ class AppAuro_config {
 	{
 		// Make sure the newly installed tables exist
 		$pass1 = DatabaseAdmin::columnsExist("users_auro", array("uni_id", "auro"));
-		$pass2 = DatabaseAdmin::columnsExist("currency_records", array("uni_id", "amount"));
+		$pass2 = DatabaseAdmin::columnsExist("auro_records", array("uni_id", "amount"));
 		
 		return ($pass1 and $pass2);
 	}

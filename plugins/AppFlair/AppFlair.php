@@ -29,19 +29,33 @@ abstract class AppFlair {
 	}
 	
 	
+/****** Get the user's flair data ******/
+	public static function getUserList
+	(
+		$uniID		// <int> The UniID to get flair data for.
+	)				// RETURNS <int:[str:mixed]> the list of flair data for the user, or array() on failure.
+	
+	// $flairData = AppFlair::getUserList($uniID);
+	{
+		return Database::selectOne("SELECT f.* FROM users_flair uf INNER JOIN flair f ON uf.flair_id=f.id WHERE uf.uni_id=?", array($uniID));
+	}
+	
+	
 /****** Create a new flair type ******/
 	public static function create
 	(
 		$title				// <str> The title of the flair to create.
 	,	$description		// <str> The description of the flair.
+	,	$color				// <str> The color to assign to the flair.
 	,	$rewardDesc			// <str> The description of the reward provided by the flair.
 	,	$siteHandle = ""	// <str> The site handle that provides this flair (or "" if global flair).
 	,	$settings = array()	// <str:mixed> The setting rules, such as to provide rewards.
+	,	$iconClass = ""		// <str> The icon class to assign to this flair.
 	)						// RETURNS <void>
 	
-	// AppFlair::create($title, $description, $rewardDesc, [$siteHandle], [$settings]);
+	// AppFlair::create($title, $description, $color, $rewardDesc, [$siteHandle], [$settings], [$iconClass]);
 	{
-		Database::query("INSERT IGNORE INTO `flair` (site_handle, title, description, reward_desc, settings_json) VALUES (?, ?, ?, ?, ?)", array($siteHandle, $title, $description, $rewardDesc, json_encode($settings)));
+		Database::query("INSERT IGNORE INTO `flair` (site_handle, title, icon_class, color, description, reward_desc, settings_json) VALUES (?, ?, ?, ?, ?, ?, ?)", array($siteHandle, $title, $iconClass, $color, $description, $rewardDesc, json_encode($settings)));
 	}
 	
 	

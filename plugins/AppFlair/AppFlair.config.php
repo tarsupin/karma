@@ -30,6 +30,9 @@ class AppFlair_config {
 			`site_handle`			varchar(22)					NOT NULL	DEFAULT '',
 			`title`					varchar(22)					NOT NULL	DEFAULT '',
 			
+			`icon_class`			varchar(22)					NOT NULL	DEFAULT '',
+			`color`					varchar(6)					NOT NULL	DEFAULT '',
+			
 			`description`			varchar(180)				NOT NULL	DEFAULT '',
 			`reward_desc`			varchar(120)				NOT NULL	DEFAULT '',
 			
