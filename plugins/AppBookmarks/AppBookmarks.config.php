@@ -25,13 +25,13 @@ class AppBookmarks_config {
 		Database::exec("
 		CREATE TABLE IF NOT EXISTS `bookmarks`
 		(
-			`id`					int(10)			unsigned	NOT NULL	DEFAULT '0',
+			`id`					int(10)			unsigned	NOT NULL	AUTO_INCREMENT,
 			
 			`book_group`			varchar(22)					NOT NULL	DEFAULT '',
 			`title`					varchar(32)					NOT NULL	DEFAULT '',
 			`url`					varchar(100)				NOT NULL	DEFAULT '',
 			
-			PRIMARY (`id`),
+			PRIMARY KEY (`id`),
 			UNIQUE (`book_group`, `title`)
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 		");

@@ -13,7 +13,7 @@ Me::initialize();
 // Determine which page you should point to, then load it
 require(SYS_PATH . "/routes.php");
 
-/****** Dynamic URLs ******/
+/****** Dynamic URLs ******
 // If a page hasn't loaded yet, check if there is a dynamic load
 if($url[0] != '')
 {

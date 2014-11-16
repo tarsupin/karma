@@ -41,7 +41,7 @@ echo '
 	.desc { max-width:120px; }
 </style>
 
-<h3>Transactions</h3>
+<h3>My Auro Transactions</h3>
 
 <table border="0" cellpadding="0" cellspacing="0">
 	<tr>

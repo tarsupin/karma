@@ -18,7 +18,82 @@ abstract class AppBookmarks {
 	
 	
 /****** Plugin Variables ******/
-	public static int $maxBookmarks = 20;		// <int>
+	public static int $maxBookmarks = 25;		// <int>
+	
+	
+/****** Get a list of the user's bookmarks ******/
+	public static function getUserList
+	(
+		int $uniID				// <int> The UniID to retrieve bookmarks for.
+	): int						// RETURNS <int> The ID of the bookmark, or 0 on failure.
+	
+	// $bookmarkList = AppBookmarks::getUserList($uniID);
+	{
+		$bmList = array();
+		
+		$results = Database::selectMultiple("SELECT b.* FROM users_bookmarks ub INNER JOIN bookmarks b ON ub.bookmark_id=b.id WHERE ub.uni_id=? ORDER BY title ASC", array($uniID));
+		
+		foreach($results as $res)
+		{
+			$bmList[$res['book_group']][$res['title']] = $res['url'];
+		}
+		
+		return $bmList;
+	}
+	
+	
+/****** Get a list of default bookmarks ******/
+	public static function fetchDefaultBookmarks (
+	): array <str, array<str, str>>				// RETURNS <str:[str:str]> The list of bookmarks.
+	
+	// $bookmarkList = AppBookmarks::fetchDefaultBookmarks();
+	{
+		return array(
+			"Communities" => array(
+					"Avatar"	=> "http://avatar.unifaction.community"
+				,	"Books"		=> "http://books.unifaction.community"
+				,	"Gaming"	=> "http://gaming.unifaction.community"
+				,	"Humor"		=> "http://humor.unifaction.community"
+				,	"Movies"	=> "http://movies.unifaction.community"
+				,	"Music"		=> "http://music.unifaction.community"
+				,	"Pets"		=> "http://pets.unifaction.community"
+				,	"Politics"	=> "http://politics.unifaction.community"
+				,	"Shows"		=> "http://shows.unifaction.community"
+				,	"Tech"		=> "http://tech.unifaction.community"
+				)
+		,	"Sites" => array(
+					"Avatar"			=> "http://avatar.unifaction.com"
+				,	"Entertainment"		=> "http://entertainment.unifaction.com"
+				,	"Food"				=> "http://food.unifaction.com"
+				,	"Gaming"			=> "http://gaming.unifaction.com"
+				,	"News"				=> "http://news.unifaction.com"
+				,	"Sports"			=> "http://sports.unifaction.com"
+				,	"Tech"				=> "http://tech.unifaction.com"
+				)
+		);
+	}
+	
+	
+/****** Get a list of the user's bookmarks ******/
+	public static function assignDefaultBookmarks
+	(
+		int $uniID		// <int> The UniID to assign the default bookmarks to.
+	): array <str, array<str, str>>				// RETURNS <str:[str:str]> The list of bookmarks.
+	
+	// AppBookmarks::assignDefaultBookmarks($uniID);
+	{
+		$bookmarkList = AppBookmarks::fetchDefaultBookmarks();
+		
+		foreach($bookmarkList as $groupName => $groupList)
+		{
+			foreach($groupList as $title => $url)
+			{
+				AppBookmarks::assignByType($uniID, "Communities", "Avatar");
+			}
+		}
+		
+		return AppBookmarks::getUserList($uniID);
+	}
 	
 	
 /****** Create a new bookmark ******/
@@ -31,7 +106,7 @@ abstract class AppBookmarks {
 	
 	// $bookmarkID = AppBookmarks::create($group $title, $url);
 	{
-		Database::query("REPLACE INTO `bookmarks` (book_group, title, url) VALUES (?, ?, ?)", array($group, $title, $url)))
+		Database::query("INSERT IGNORE INTO `bookmarks` (book_group, title, url) VALUES (?, ?, ?)", array($group, $title, $url));
 		
 		return Database::$lastID;
 	}
@@ -62,7 +137,7 @@ abstract class AppBookmarks {
 		// Check if the user has more than the maximum allowed number of bookmarks
 		$countMarks = (int) Database::selectValue("SELECT COUNT(*) as totalNum FROM users_bookmarks WHERE uni_id=? LIMIT 1", array($uniID));
 		
-		if(self::$maxBookmarks > $countMarks);
+		if($countMarks > self::$maxBookmarks)
 		{
 			return false;
 		}
@@ -100,5 +175,24 @@ abstract class AppBookmarks {
 	// AppBookmarks::unassignByID($uniID, $bookmarkID);
 	{
 		return Database::query("DELETE FROM users_bookmarks WHERE uni_id=? AND bookmark_id=? LIMIT 1", array($uniID, $bookmarkID));
+	}
+	
+	
+/****** Un-assign bookmark from a user based on the bookmark type (instead of ID) ******/
+	public static function unassignByType
+	(
+		int $uniID		// <int> The UniID of the user to assign bookmark to.
+	,	string $group		// <str> The bookmark group that the bookmark belongs to.
+	,	string $title		// <str> The title of the bookmark to assign.
+	): bool				// RETURNS <bool> TRUE on success, FALSE on failure.
+	
+	// AppBookmarks::unassignByType($uniID, $group, $title);
+	{
+		if($bookmarkID = self::getIDByType($group, $title))
+		{
+			return AppBookmarks::unassignByID($uniID, $bookmarkID);
+		}
+		
+		return false;
 	}
 }
