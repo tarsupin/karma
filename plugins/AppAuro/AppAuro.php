@@ -97,14 +97,19 @@ abstract class AppAuro {
 	// $success = AppAuro::grantAuro($uniID, $auro, [$record], [$desc], [$siteName]);
 	{
 		// Record the transaction
-		if(!Database::query("UPDATE users_auro SET auro=auro+? WHERE uni_id=? LIMIT 1", array($auro, $uniID)))
+		Database::query("UPDATE users_auro SET auro=auro+? WHERE uni_id=? LIMIT 1", array($auro, $uniID));
+		
+		// If there was no update made, the user doesn't exist - create them
+		if(!Database::$rowsAffected)
 		{
 			if(!AppAuro::createUserEntry($uniID, 0))
 			{
 				return false;
 			}
 			
-			if(!Database::query("UPDATE users_auro SET auro=auro+? WHERE uni_id=? LIMIT 1", array($auro, $uniID)))
+			Database::query("UPDATE users_auro SET auro=auro+? WHERE uni_id=? LIMIT 1", array($auro, $uniID));
+			
+			if(!Database::$rowsAffected)
 			{
 				return false;
 			}
@@ -142,7 +147,7 @@ abstract class AppAuro {
 				// Record the transaction
 				if($record)
 				{
-					self::record($uniID, 0, $auro, $desc, $siteName);
+					self::record($uniID, 0, 0 - $auro, $desc, $siteName);
 				}
 				
 				return $pass;
@@ -245,6 +250,15 @@ abstract class AppAuro {
 	
 	// AppAuro::createUserEntry($uniID, $auro);
 	{
+		// Check if the user exists
+		if(!$exists = User::get($uniID, "handle"))
+		{
+			if(!User::silentRegister($uniID))
+			{
+				return false;
+			}
+		}
+		
 		$auroDay = (int) (date("y") . sprintf('%03d', (int) date('z')));
 		
 		return Database::query("INSERT INTO users_auro (uni_id, auro, date_last_allotted, auro_day) VALUES (?, ?, ?, ?)", array($uniID, $auro, time(), $auroDay));

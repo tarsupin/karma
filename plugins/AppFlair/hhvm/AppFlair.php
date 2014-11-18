@@ -77,11 +77,35 @@ abstract class AppFlair {
 	(
 		int $uniID				// <int> The UniID of the user to assign flair to.
 	,	int $flairID			// <int> The flair ID to assign to the user.
-	,	int $expires = 0		// <int> The timestamp of when the flair will expire (or 0 if it doesn't).
+	,	int $addTime = 0		// <int> The number of seconds to add to the expiration time (or 0 to never expire).
 	): bool						// RETURNS <bool> TRUE on success, FALSE on failure.
 	
-	// AppFlair::assignByID($uniID, $flairID, [$expires]);
+	// AppFlair::assignByID($uniID, $flairID, [$addTime]);
 	{
+		$expires = 0;
+		
+		// Check if you're adding time or not
+		if($addTime)
+		{
+			// Get the expiration time of the existing flair value (if applicable)
+			if(!$getData = Database::selectOne("SELECT uni_id, expires FROM users_flair WHERE uni_id=? LIMIT 1", array($uniID)))
+			{
+				$expires = time() + $addTime;
+			}
+			else
+			{
+				if($getData['expires'] > time())
+				{
+					$expires = (int) $getData['expire'] + $addTime;
+				}
+				else
+				{
+					$expires = time() + $addTime;
+				}
+			}
+		}
+		
+		// Assign the flair
 		return Database::query("REPLACE INTO users_flair (uni_id, flair_id, expires) VALUES (?, ?, ?)", array($uniID, $flairID, $expires));
 	}
 	
@@ -92,14 +116,14 @@ abstract class AppFlair {
 		int $uniID				// <int> The UniID of the user to assign flair to.
 	,	string $siteHandle			// <str> The site handle that assigned this flair.
 	,	string $title				// <str> The title of the flair to assign.
-	,	int $expires = 0		// <int> The timestamp of when the flair will expire (or 0 if it doesn't).
+	,	int $addTime = 0		// <int> The number of seconds to add to the expiration time (or 0 to never expire).
 	): bool						// RETURNS <bool> TRUE on success, FALSE on failure.
 	
-	// AppFlair::assignByType($uniID, $siteHandle, $title, [$expires]);
+	// AppFlair::assignByType($uniID, $siteHandle, $title, [$addTime]);
 	{
 		if($flairID = self::getIDByType($siteHandle, $title))
 		{
-			return AppFlair::assignByID($uniID, $flairID, $expires);
+			return AppFlair::assignByID($uniID, $flairID, $addTime);
 		}
 		
 		return false;

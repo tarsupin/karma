@@ -45,7 +45,7 @@ class SpendAuroAPI extends API {
 	
 /****** Run the API ******/
 	public function runAPI (
-	): array <int, array<str, mixed>>					// RETURNS <int:[str:mixed]> the response depends on the type of command being requested.
+	): bool					// RETURNS <bool> TRUE on success, FALSE on failure.
 	
 	// $this->runAPI()
 	{

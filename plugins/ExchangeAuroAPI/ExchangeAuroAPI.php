@@ -46,7 +46,7 @@ class ExchangeAuroAPI extends API {
 	
 /****** Run the API ******/
 	public function runAPI (
-	)					// RETURNS <int:[str:mixed]> the response depends on the type of command being requested.
+	)					// RETURNS <bool> TRUE on success, FALSE on failure.
 	
 	// $this->runAPI()
 	{

@@ -45,7 +45,7 @@ class GrantAuroAPI extends API {
 	
 /****** Run the API ******/
 	public function runAPI (
-	): array <int, array<str, mixed>>					// RETURNS <int:[str:mixed]> the response depends on the type of command being requested.
+	): bool					// RETURNS <bool> TRUE on success, FALSE on failure.
 	
 	// $this->runAPI()
 	{
@@ -60,6 +60,7 @@ class GrantAuroAPI extends API {
 		$record = $desc ? true : false;
 		$siteName = isset($this->data['site_name']) ? $this->data['site_name'] : '';
 		
+		// Grant the auro to the user
 		return AppAuro::grantAuro((int) $this->data['uni_id'], (int) $this->data['auro'], $record, $desc, $siteName);
 	}
 	

@@ -46,7 +46,7 @@ echo '
 <table border="0" cellpadding="0" cellspacing="0">
 	<tr>
 		<th>Site</th>
-		<th>Exchanger</th>
+		<th>Exchanged With</th>
 		<th>Amount</th>
 		<th>Description</th>
 		<th>Date</th>
@@ -58,7 +58,7 @@ $curYear = date('Y', $curTime);
 
 foreach($auroRecords as $record)
 {
-	// Prepare the "Exchanger" Entry
+	// Prepare the "Exchanged With" Entry
 	if($record['other_id'])
 	{
 		$handle = $record['handle'] ? '<a href="' . URL::unifaction_social() . '/' . $record['handle'] . '">@' . $record['handle'] . '</a>' : 'Unknown';
@@ -73,7 +73,7 @@ foreach($auroRecords as $record)
 	<tr>
 		<td>' . $record['site_name'] . '</td>
 		<td>' . $handle . '</td>
-		<td>' . $record['amount'] . ' Auro</td>
+		<td>' . number_format($record['amount']) . ' Auro</td>
 		<td class="desc">' . $record['description'] . '</td>
 		<td>' . date('M jS' . (date('Y', $record['date_exchange']) != $curYear ? ", Y" : ""), $record['date_exchange']) . '</td>
 	</tr>';

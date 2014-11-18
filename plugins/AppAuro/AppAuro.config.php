@@ -45,7 +45,7 @@ class AppAuro_config {
 			
 			`site_name`				varchar(22)					NOT NULL	DEFAULT '',
 			`other_id`				int(10)			unsigned	NOT NULL	DEFAULT '0',
-			`amount`				int(10)			unsigned	NOT NULL	DEFAULT '0',
+			`amount`				int(8)						NOT NULL	DEFAULT '0',
 			
 			`description`			varchar(64)					NOT NULL	DEFAULT '',
 			

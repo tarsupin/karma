@@ -16,7 +16,7 @@ This API allows another site to grant flair to a user.
 		"uni_id"		=> $uniID
 	,	"site_handle"	=> $siteHandle
 	,	"title"			=> $title
-	,	"duration"		=> $duration		// <int> The number of seconds to grant this flair for (0 for infinite)
+	,	"add_time"		=> $timeToAdd		// <int> The number of seconds to grant this flair for (0 for infinite)
 	);
 	
 	// Connect to this API from UniFaction
@@ -27,7 +27,7 @@ This API allows another site to grant flair to a user.
 ------ Response Packet ------
 -----------------------------
 
-	TRUE if the auro was sent properly.
+	TRUE if the flair was added properly.
 	FALSE if there was an error.
 
 */
@@ -45,22 +45,24 @@ class GrantFlairAPI extends API {
 	
 /****** Run the API ******/
 	public function runAPI (
-	)					// RETURNS <int:[str:mixed]> the response depends on the type of command being requested.
+	)					// RETURNS <bool> TRUE if the flair is added successfully, FALSE if not.
 	
 	// $this->runAPI()
 	{
 		// Make sure the last ID was sent
-		if(!isset($this->data['uni_id']) or !isset($this->data['site_handle']) or !isset($this->data['title']) or !isset($this->data['duration']))
+		if(!isset($this->data['uni_id']) or !isset($this->data['site_handle']) or !isset($this->data['title']) or !isset($this->data['add_time']))
 		{
 			return false;
 		}
 		
-		// Prepare Values
-		$desc = isset($this->data['desc']) ? Sanitize::safeword($this->data['desc']) : "";
-		$record = $desc ? true : false;
-		$siteName = isset($this->data['site_name']) ? $this->data['site_name'] : '';
+		// Get the appropriate flair ID
+		if(!$flairID = AppFlair::getIDByType(Sanitize::variable($this->data['site_handle']), Sanitize::variable($this->data['title'])))
+		{
+			return false;
+		}
 		
-		return AppAuro::grantAuro((int) $this->data['uni_id'], (int) $this->data['auro'], $record, $desc, $siteName);
+		// Assign the flair
+		return AppFlair::assignByID((int) $this->data['uni_id'], $flairID, (int) $this->data['add_time']);
 	}
 	
 }
