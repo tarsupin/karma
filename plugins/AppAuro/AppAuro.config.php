@@ -29,8 +29,6 @@ class AppAuro_config {
 			`auro`					int(10)			unsigned	NOT NULL	DEFAULT '0',
 			
 			`date_last_allotted`	int(10)			unsigned	NOT NULL	DEFAULT '0',
-			
-			`free_auro_per_day`		smallint(5)		unsigned	NOT NULL	DEFAULT '0',
 			`auro_day`				smallint(5)		unsigned	NOT NULL	DEFAULT '0',
 			
 			UNIQUE (`uni_id`)

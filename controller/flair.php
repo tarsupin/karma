@@ -16,12 +16,13 @@ echo '
 <div id="content">' . Alert::display();
 
 echo '
-<h3>UniFaction Karma System</h3>';
+<h1 style="padding-bottom:0px;">List of UniFaction Flair</h1>
+<p style="margin-top:0px;">Note: this list only includes flair that can be obtained through the entire UniFaction system. Individual sites may have more flair listed.</p>';
 
+$flairList = AppFlair::getGlobalByCategories();
 
-$flairData = AppFlair::getData(1);
+AppFlair::drawList($flairList, true);
 
-echo AppFlair::drawFlairTag($flairData);
 
 echo '
 </div>';

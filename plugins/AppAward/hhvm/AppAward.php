@@ -46,6 +46,32 @@ abstract class AppAward {
 	}
 	
 	
+/****** Get the award data for a specific user ******/
+	public static function getUserAwardData
+	(
+		int $uniID				// <int> The UniID that possess the award.
+	,	int $awardID			// <int> The award ID in possession.
+	): array <str, mixed>						// RETURNS <str:mixed> the award data.
+	
+	// $awardData = AppAward::getUserAwardData($uniID, $awardID);
+	{
+		return Database::selectOne("SELECT ua.count, a.* FROM users_awards ua INNER JOIN awards a ON ua.award_id=a.id WHERE ua.uni_id=? AND ua.award_id=? LIMIT 1", array($uniID, $awardID));
+	}
+	
+	
+/****** Get the number of times an award has been granted to a user ******/
+	public static function getAwardCount
+	(
+		int $uniID				// <int> The UniID that was rewarded with the award.
+	,	int $awardID			// <int> The award ID to be rewarded.
+	): int						// RETURNS <int> the number of times the award has been rewarded to the user.
+	
+	// $rewardCount = AppAward::getAwardCount($uniID, $awardID);
+	{
+		return (int) Database::selectValue("SELECT count FROM users_awards WHERE uni_id=? AND award_id=? LIMIT 1", array($uniID, $awardID));
+	}
+	
+	
 /****** Assign award to a user ******/
 	public static function assignByID
 	(
@@ -55,7 +81,13 @@ abstract class AppAward {
 	
 	// AppAward::assignByID($uniID, $awardID);
 	{
-		return Database::query("REPLACE INTO users_flair (uni_id, flair_id) VALUES (?, ?)", array($uniID, $awardID));
+		// Check if the award has been rewarded before
+		if(!$rewardCount = self::getAwardCount($uniID, $awardID))
+		{
+			return Database::query("REPLACE INTO users_awards (uni_id, award_id, count) VALUES (?, ?, ?)", array($uniID, $awardID, 1));
+		}
+		
+		return Database::query("UPDATE users_awards SET count=count+? WHERE uni_id=? AND award_id=? LIMIT 1", array(1, $uniID, $awardID));
 	}
 	
 	
@@ -87,7 +119,7 @@ abstract class AppAward {
 	
 	// AppAward::unassignByID($uniID, $awardID);
 	{
-		return Database::query("DELETE FROM users_flair WHERE uni_id=? AND flair_id=? LIMIT 1", array($uniID, $awardID));
+		return Database::query("DELETE FROM users_awards WHERE uni_id=? AND award_id=? LIMIT 1", array($uniID, $awardID));
 	}
 	
 }

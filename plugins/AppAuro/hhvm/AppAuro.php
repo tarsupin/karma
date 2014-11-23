@@ -56,10 +56,10 @@ abstract class AppAuro {
 	
 	// AppAuro::allotAuro($uniID);
 	{
-		$checkLastAllot = Database::selectValue("SELECT date_last_allotted FROM users_auro WHERE uni_id=? LIMIT 1", array($uniID));
+		$allotAuro = Database::selectOne("SELECT date_last_allotted, auro_day FROM users_auro WHERE uni_id=? LIMIT 1", array($uniID));
 		
 		// If the user's table entry isn't created, create it now
-		if($checkLastAllot === false)
+		if(!$allotAuro)
 		{
 			if(!AppAuro::createUserEntry($uniID, 0))
 			{
@@ -68,11 +68,24 @@ abstract class AppAuro {
 		}
 		
 		// Determine the number of minutes since the last date
-		$timeSince = (time() - (int) $checkLastAllot) / 60;
+		$timeSince = (time() - (int) $allotAuro['date_last_allotted']) / 60;
 		
 		// If it's been more than five minutes since your last allotment, gain auro
 		if($timeSince >= 5)
 		{
+			// Prepare Values
+			$auroDay = (int) (date("y") . sprintf('%03d', (int) date('z')));
+			
+			// If it isn't the same auro day, we can grant free auro
+			if($auroDay != $allotAuro['auro_day'])
+			{
+				// Determine your free auro amount each day
+				$rewardResults = AppFlair::compileUserFlairRewards($uniID);
+				
+				// Update your free auro each day
+				Database::query("UPDATE users_auro SET auro_day=?, auro=auro+? WHERE uni_id=? LIMIT 1", array($auroDay, $rewardResults['free_auro_per_day'], $uniID));
+			}
+			
 			// Determine how much auro to give
 			$amountToGive = min(self::$auroCapOnAllot, round($timeSince * self::$auroPerMinute));
 			

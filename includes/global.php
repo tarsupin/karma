@@ -10,14 +10,40 @@ if(!You::$id and Me::$loggedIn)
 // Load the Social Menu
 require(SYS_PATH . "/controller/includes/social-menu.php");
 
-// Load the Social Menu
-require(SYS_PATH . "/controller/includes/uni-menu.php");
-
-// Main Navigation
-WidgetLoader::add("MobilePanel", 10, '
-<div class="panel-box">
-	<ul class="panel-slots">
-		<li class="nav-slot"><a href="/">Home<span class="icon-circle-right nav-arrow"></span></a></li>
-		<li class="nav-slot"><a href="/Books">Chatroom: Books<span class="icon-circle-right nav-arrow"></span></a></li>
-	</ul>
-</div>');
+if(Me::$loggedIn)
+{
+	// Karma Dropdown Menu
+	WidgetLoader::add("UniFactionMenu", 10, '
+	<div class="menu-wrap hide-600">
+		<ul class="menu">' . (isset($uniMenu) ? $uniMenu : '') . '<li class="menu-slot"><a href="/' . Me::$vals['handle'] . '">My Flair</a></li><li class="menu-slot"><a href="/auro-transactions">My Auro</a></li><li class="menu-slot"><a href="/bookmarks">My Bookmarks</a></li><li class="menu-slot"><a href="/flair">Flair List</a></li>
+		</ul>
+	</div>');
+	
+	// Main Navigation
+	WidgetLoader::add("MobilePanel", 10, '
+	<div class="panel-box">
+		<ul class="panel-slots">
+			<li class="nav-slot"><a href="/' . Me::$vals['handle'] . '">My Flair<span class="icon-circle-right nav-arrow"></span></a></li>
+			<li class="nav-slot"><a href="/auro-transactions">My Auro<span class="icon-circle-right nav-arrow"></span></a></li>
+			<li class="nav-slot"><a href="/bookmarks">My Bookmarks<span class="icon-circle-right nav-arrow"></span></a></li>
+			<li class="nav-slot"><a href="/flair">Flair List<span class="icon-circle-right nav-arrow"></span></a></li>
+		</ul>
+	</div>');
+}
+else
+{
+	// Karma Dropdown Menu
+	WidgetLoader::add("UniFactionMenu", 10, '
+	<div class="menu-wrap hide-600">
+		<ul class="menu">' . (isset($uniMenu) ? $uniMenu : '') . '<li class="menu-slot"><a href="/flair">Flair List</a></li>
+		</ul>
+	</div>');
+	
+	// Main Navigation
+	WidgetLoader::add("MobilePanel", 10, '
+	<div class="panel-box">
+		<ul class="panel-slots">
+			<li class="nav-slot"><a href="/flair">Flair List<span class="icon-circle-right nav-arrow"></span></a></li>
+		</ul>
+	</div>');
+}

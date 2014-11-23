@@ -27,9 +27,11 @@ class AppFlair_config {
 		(
 			`id`					int(10)			unsigned	NOT NULL	AUTO_INCREMENT,
 			
+			`category`				varchar(22)					NOT NULL	DEFAULT '',
 			`site_handle`			varchar(22)					NOT NULL	DEFAULT '',
 			`title`					varchar(22)					NOT NULL	DEFAULT '',
 			
+			`rank`					tinyint(2)		unsigned	NOT NULL	DEFAULT '0',
 			`icon_class`			varchar(22)					NOT NULL	DEFAULT '',
 			`color`					varchar(6)					NOT NULL	DEFAULT '',
 			
@@ -39,7 +41,8 @@ class AppFlair_config {
 			`settings_json`			varchar(200)				NOT NULL	DEFAULT '',
 			
 			PRIMARY KEY (`id`),
-			UNIQUE (`site_handle`, `title`)
+			UNIQUE (`site_handle`, `title`),
+			UNIQUE (`category`, `rank`, `title`)
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 		");
 		
@@ -48,7 +51,11 @@ class AppFlair_config {
 		(
 			`uni_id`				int(10)			unsigned	NOT NULL	DEFAULT '0',
 			`flair_id`				int(10)			unsigned	NOT NULL	DEFAULT '0',
+			
 			`expires`				int(10)			unsigned	NOT NULL	DEFAULT '0',
+			`total_duration`		int(10)			unsigned	NOT NULL	DEFAULT '0',
+			
+			`hidden`				tinyint(1)		unsigned	NOT NULL	DEFAULT '0',
 			
 			UNIQUE (`uni_id`, `flair_id`)
 		) ENGINE=InnoDB DEFAULT CHARSET=utf8 PARTITION BY KEY(uni_id) PARTITIONS 7;

@@ -13,19 +13,24 @@ Me::initialize();
 // Determine which page you should point to, then load it
 require(SYS_PATH . "/routes.php");
 
-/****** Dynamic URLs ******
+/****** Dynamic URLs ******/
 // If a page hasn't loaded yet, check if there is a dynamic load
 if($url[0] != '')
 {
-	$channel = Sanitize::variable($url[0]);
+	// Determine the handle
+	$handle = Sanitize::variable($url[0]);
 	
-	// Auto-create the channel if it does not exist
-	if(!AppChannel::exists($channel))
+	if(!$uniID = User::getIDByHandle($handle))
 	{
-		AppChannel::createChannel($channel);
+		User::silentRegister($handle);
+		
+		$uniID = User::getIDByHandle($handle);
 	}
 	
-	require(APP_PATH . '/controller/chat.php'); exit;
+	if($uniID)
+	{
+		require(APP_PATH . '/controller/user.php'); exit;
+	}
 }
 //*/
 

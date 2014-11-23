@@ -55,14 +55,48 @@ $bookmarkID = AppBookmarks::create("Sites", "Tech", "http://tech.unifaction.com"
 $bookmarkID = AppBookmarks::create("Sites", "The Nooch", "http://thenooch.org");
 $bookmarkID = AppBookmarks::create("Sites", "Travel", "http://travel.unifaction.com");
 
-// Create Flair
-$friendColor = "CCFF99";
-$friendIcon = "icon-group";
+// Friends
+$color = "FFFACD";
+$icon = "icon-group";
 
-AppFlair::create("Friendly", "Invite a friend that becomes an active user on UniFaction.", $friendColor, "Automatically earn +15 auro every day that you log in.", "", array("free_auro_per_day" => 15), $friendIcon);
+AppFlair::create("Friends", "Friendly", "Invite a friend that becomes an active user on UniFaction.", $color, "", "", array("free_auro_per_day" => 15), $icon);
 
-AppFlair::create("Charismatic", "Invite 3 friends that become active users on UniFaction.", $friendColor, "Automatically earn +15 auro every day that you log in.", "", array("free_auro_per_day" => 15), $friendIcon);
+AppFlair::create("Friends", "Charismatic", "Invite 3 friends that become active users on UniFaction.", $color, "", "", array("free_auro_per_day" => 30), $icon);
 
-AppFlair::create("Charming", "Invite 10 friends that become active users on UniFaction.", $friendColor, "Automatically earn +20 auro every day that you log in.", "", array("free_auro_per_day" => 20), $friendIcon);
+AppFlair::create("Friends", "Charming", "Invite 10 friends that become active users on UniFaction.", $color, "", "", array("free_auro_per_day" => 50), $icon);
 
-AppFlair::create("Life of the Party", "Invite 25 friends that become active users on UniFaction.", $friendColor, "Automatically earn +25 auro every day that you log in.", "", array("free_auro_per_day" => 25), $friendIcon);
+AppFlair::create("Friends", "Life of the Party", "Invite 25 friends that become active users on UniFaction.", $color, "", "", array("free_auro_per_day" => 100), $icon);
+
+
+// Projects
+$color = "CCFF99";
+$icon = "icon-earth";
+
+AppFlair::create("Projects", "UniFaction Aide", "Help UniFaction with a project.", $color, "", "", array("free_auro_per_day" => 200, "limited" => true, "assigned" => true), $icon);
+
+AppFlair::create("Projects", "Project Coordinator", "Help UniFaction coordinate a project, taking responsibility for its progress.", $color, "", "", array("free_auro_per_day" => 250, "limited" => true, "assigned" => true), $icon);
+
+
+// Supporters
+$color = "98FB98";
+$icon = "icon-coin";
+
+AppFlair::create("Supporters", "Supporter", "Are a contributor to UniFaction.", $color, "", "", array(), $icon);
+AppFlair::create("Supporters", "Major Supporter", "Are one of the top contributors to UniFaction.", $color, "", "", array(), $icon);
+
+
+// Staff
+$color = "DEB887";
+$icon = "icon-wand";
+
+AppFlair::create("Staff", "Moderator", "An official UniFaction moderator.", $color, "", "", array(), $icon);
+AppFlair::create("Staff", "Writer", "An official UniFaction writer.", $color, "", "", array(), $icon);
+AppFlair::create("Staff", "Admin", "An official UniFaction administrator.", $color, "", "", array(), $icon);
+AppFlair::create("Staff", "Programmer", "An official UniFaction programmer.", $color, "", "", array(), $icon);
+AppFlair::create("Staff", "Artist", "An official UniFaction artist.", $color, "", "", array(), $icon);
+
+// Special
+$color = "FFE4E1";
+$icon = "icon-star";
+
+AppFlair::create("Special", "Original User", "Was using UniFaction back in its original days.", $color, "", "", array("free_auro_per_day" => 50, ), $icon);

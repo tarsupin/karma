@@ -45,6 +45,7 @@ class AppAward_config {
 		(
 			`uni_id`				int(10)			unsigned	NOT NULL	DEFAULT '0',
 			`award_id`				int(10)			unsigned	NOT NULL	DEFAULT '0',
+			
 			`count`					tinyint(3)		unsigned	NOT NULL	DEFAULT '0',
 			
 			UNIQUE (`uni_id`, `award_id`)

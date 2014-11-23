@@ -1,5 +1,11 @@
 <?php if(!defined("CONF_PATH")) { die("No direct script access allowed."); }
 
+// Load the appropriate page
+if(!isset($uniID) or !isset($handle))
+{
+	header("Location: /"); exit;
+}
+
 // Run Global Script
 require(APP_PATH . "/includes/global.php");
 
@@ -16,12 +22,13 @@ echo '
 <div id="content">' . Alert::display();
 
 echo '
-<h3>UniFaction Karma System</h3>';
+<h1>@' . $handle . '\'s Flair</h1>';
 
+$flairList = AppFlair::getUserList($uniID);
 
-$flairData = AppFlair::getData(1);
+AppFlair::drawList($flairList);
 
-echo AppFlair::drawFlairTag($flairData);
+AppAuro::allotAuro($uniID);
 
 echo '
 </div>';
