@@ -186,7 +186,7 @@ abstract class AppAuro {
 				{
 					if(!$checkExist = Database::selectValue("SELECT uni_id FROM users_auro WHERE uni_id=? LIMIT 1", array($uniIDTo)))
 					{
-						AppAuro::createUserEntry($uniIDTo, $auro);
+						AppAuro::createUserEntry($uniIDTo, 0);
 						
 						if(!$checkExist = Database::selectValue("SELECT uni_id FROM users_auro WHERE uni_id=? LIMIT 1", array($uniIDTo)))
 						{
