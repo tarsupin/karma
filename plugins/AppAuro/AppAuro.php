@@ -200,7 +200,7 @@ abstract class AppAuro {
 				// Record the transaction
 				if($record)
 				{
-					self::record($uniIDFrom, $uniIDTo, $auro, $desc, $siteName);
+					self::record($uniIDFrom, $uniIDTo, 0 - $auro, $desc, $siteName);
 				}
 				
 				return Database::endTransaction($pass);
