@@ -18,16 +18,14 @@ require(SYS_PATH . "/routes.php");
 if($url[0] != '')
 {
 	// Determine the handle
-	$handle = Sanitize::variable($url[0]);
-	
-	if(!$uniID = User::getIDByHandle($handle))
+	if(!$userData = User::getDataByHandle(Sanitize::variable($url[0]), "uni_id, handle, display_name"))
 	{
-		User::silentRegister($handle);
+		User::silentRegister(Sanitize::variable($url[0]));
 		
-		$uniID = User::getIDByHandle($handle);
+		$userData = User::getDataByHandle(Sanitize::variable($url[0]), "uni_id, handle, display_name");
 	}
 	
-	if($uniID)
+	if($userData)
 	{
 		require(APP_PATH . '/controller/user.php'); exit;
 	}

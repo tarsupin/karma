@@ -53,7 +53,7 @@ class AppFlair_config {
 			`flair_id`				int(10)			unsigned	NOT NULL	DEFAULT '0',
 			
 			`expires`				int(10)			unsigned	NOT NULL	DEFAULT '0',
-			`total_duration`		int(10)			unsigned	NOT NULL	DEFAULT '0',
+			`duration`				int(10)			unsigned	NOT NULL	DEFAULT '0',
 			
 			`hidden`				tinyint(1)		unsigned	NOT NULL	DEFAULT '0',
 			

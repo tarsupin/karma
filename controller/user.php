@@ -1,7 +1,7 @@
 <?php if(!defined("CONF_PATH")) { die("No direct script access allowed."); }
 
 // Load the appropriate page
-if(!isset($uniID) or !isset($handle))
+if(!isset($userData))
 {
 	header("Location: /"); exit;
 }
@@ -22,13 +22,17 @@ echo '
 <div id="content">' . Alert::display();
 
 echo '
-<h1>@' . $handle . '\'s Flair</h1>';
+<h1>' . $userData['display_name'] . '\'s Flair</h1>';
 
-$flairList = AppFlair::getUserList($uniID);
-
-AppFlair::drawList($flairList);
-
-AppAuro::allotAuro($uniID);
+if($flairList = AppFlair::getUserList((int) $userData['uni_id']))
+{
+	AppFlair::drawList($flairList);
+}
+else
+{
+	echo '
+	<p>' . $userData['display_name'] . ' is not currently revealing any visible flair.</p>';
+}
 
 echo '
 </div>';

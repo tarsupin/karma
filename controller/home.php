@@ -19,10 +19,6 @@ echo '
 <h3>UniFaction Karma System</h3>';
 
 
-$flairData = AppFlair::getData(1);
-
-echo AppFlair::drawFlairTag($flairData);
-
 echo '
 </div>';
 
