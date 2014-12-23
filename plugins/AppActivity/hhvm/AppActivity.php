@@ -32,7 +32,7 @@ abstract class AppActivity {
 		$monthCycle = (int) date("ym");
 		
 		// Add the current log entry
-		Database::query("INSERT INTO activity_current_log (uni_id, action, site_handle, date_action) VALUES (?, ?, ?, ?)", array($uniID, $action, $siteHandle, $timestamp));
+		Database::query("INSERT IGNORE INTO activity_current_log (uni_id, action, site_handle, date_action) VALUES (?, ?, ?, ?)", array($uniID, $action, $siteHandle, $timestamp));
 		
 		// Check if the permanent log has been updated with this type of activity
 		if($check = Database::selectValue("SELECT uni_id FROM activity_perm_log WHERE uni_id=? AND month_cycle=? AND site_handle=? AND action=? LIMIT 1", array($uniID, $monthCycle, $siteHandle, $action)))
