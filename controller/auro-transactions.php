@@ -29,6 +29,11 @@ echo '
 <div id="panel-right"></div>
 <div id="content">'	. Alert::display();
 
+if(!$auroData = AppAuro::getData(Me::$id))
+{
+	$auroData['auro'] = 0;
+}
+
 echo '
 <style>
 	table { border-right:solid 1px #e2e2e1; width:100%; text-align:left; }
@@ -40,6 +45,10 @@ echo '
 	
 	.desc { max-width:120px; }
 </style>
+
+<h3>My Auro Amount</h3>
+
+You currently have ' . number_format($auroData['auro']) . ' Auro.<br/><br/>
 
 <h3>My Auro Transactions</h3>
 

@@ -26,7 +26,7 @@ abstract class AppAuro {
 	public static function getData
 	(
 		int $uniID		// <int> The UniID to retrieve the auro data for.
-	): bool				// RETURNS <bool> TRUE on successfully added, FALSE on failure.
+	): array <str, int>				// RETURNS <str:int> the user's Auro information.
 	
 	// $auroData = AppAuro::getData($uniID);
 	{
