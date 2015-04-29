@@ -56,7 +56,7 @@ class GrantFlairAPI extends API {
 		}
 		
 		// Get the appropriate flair ID
-		if(!$flairID = AppFlair::getIDByType(Sanitize::variable($this->data['site_handle']), Sanitize::variable($this->data['title'])))
+		if(!$flairID = AppFlair::getIDByType(Sanitize::variable($this->data['site_handle']), Sanitize::variable($this->data['title'], " ")))
 		{
 			return false;
 		}

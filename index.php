@@ -27,6 +27,10 @@ if($url[0] != '')
 	
 	if($userData)
 	{
+		You::$id = (int) $userData['uni_id'];
+		You::$name = $userData['display_name'];
+		You::$handle = $userData['handle'];
+		
 		require(APP_PATH . '/controller/user.php'); exit;
 	}
 }

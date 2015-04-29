@@ -1,5 +1,11 @@
 <?php if(!defined("CONF_PATH")) { die("No direct script access allowed."); }
 
+// Make sure you're logged in
+if(!Me::$loggedIn)
+{
+	Me::redirectLogin("/bookmarks", "/");
+}
+
 // Get a list of bookmarks from the user
 $bookmarkList = AppBookmarks::getUserList(Me::$id);
 

@@ -243,11 +243,11 @@ abstract class AppAuro {
 		$pass2 = true;
 		
 		// Run the record keeping
-		$pass1 = Database::query("INSERT INTO `auro_records` (`uni_id`, `site_name`, `other_id`, `amount`, `description`, `date_exchange`) VALUES (?, ?, ?, ?, ?, ?)", array($uniID, $siteName, $uniIDOther, $auro, Sanitize::safeword($desc), $timestamp));
+		$pass1 = Database::query("INSERT INTO `auro_records` (`uni_id`, `site_name`, `other_id`, `amount`, `description`, `date_exchange`) VALUES (?, ?, ?, ?, ?, ?)", array($uniID, $siteName, $uniIDOther, $auro, Sanitize::punctuation($desc, "()"), $timestamp));
 		
 		if($uniIDOther !== 0)
 		{
-			$pass2 = Database::query("INSERT INTO `auro_records` (`uni_id`, `site_name`, `other_id`, `amount`, `description`, `date_exchange`) VALUES (?, ?, ?, ?, ?, ?)", array($uniIDOther, $siteName, $uniID, 0 - $auro, Sanitize::safeword($desc), $timestamp));
+			$pass2 = Database::query("INSERT INTO `auro_records` (`uni_id`, `site_name`, `other_id`, `amount`, `description`, `date_exchange`) VALUES (?, ?, ?, ?, ?, ?)", array($uniIDOther, $siteName, $uniID, 0 - $auro, Sanitize::punctuation($desc, "()"), $timestamp));
 		}
 		
 		return ($pass1 && $pass2);
