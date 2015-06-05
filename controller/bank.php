@@ -6,11 +6,6 @@ if(!Me::$loggedIn)
 	Me::redirectLogin("/bank", "/");
 }
 
-if(Me::$clearance < 4)
-{
-	header("Location:/"); exit;
-}
-
 // New bank account if the user owns less than 10
 if(Form::submitted("new-bank-account"))
 {

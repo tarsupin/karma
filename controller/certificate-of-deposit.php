@@ -6,11 +6,6 @@ if(!Me::$loggedIn)
 	Me::redirectLogin("/certificate-of-deposit", "/");
 }
 
-if(Me::$clearance < 4)
-{
-	header("Location:/"); exit;
-}
-
 // New bank CD if the user owns less than 3
 if(Form::submitted("new-cd") && in_array((int) $_POST['plan'], array(1, 2, 3)))
 {
