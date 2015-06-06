@@ -48,7 +48,9 @@ abstract class AppBookmarks {
 	
 	// $bookmarkList = AppBookmarks::fetchDefaultBookmarks();
 	{
-		return array(
+		return array();
+		
+		/*return array(
 			"Communities" => array(
 					"Avatar"	=> "http://avatar.unifaction.community"
 				,	"Books"		=> "http://books.unifaction.community"
@@ -70,7 +72,7 @@ abstract class AppBookmarks {
 				,	"Sports"			=> "http://sports.unifaction.com"
 				,	"Tech"				=> "http://tech.unifaction.com"
 				)
-		);
+		);*/
 	}
 	
 	
