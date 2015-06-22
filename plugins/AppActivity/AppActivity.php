@@ -62,7 +62,7 @@ abstract class AppActivity {
 	{
 		if($checkDate = Database::selectValue("SELECT date_action FROM activity_current_log WHERE uni_id=? ORDER BY date_action DESC LIMIT 150, 1", array($uniID)))
 		{
-			Database::query("DELETE FROM activity_current_log WHERE uni_id=? AND date_action < ?", array($checkDate));
+			Database::query("DELETE FROM activity_current_log WHERE uni_id=? AND date_action < ?", array($uniID, $checkDate));
 		}
 	}
 }

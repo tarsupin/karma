@@ -65,6 +65,8 @@ abstract class AppAuro {
 			{
 				return false;
 			}
+			$allotAuro['auro_day'] = (int) (date("y") . sprintf('%03d', (int) date('z')));
+			$allotAuro['date_last_allotted'] = time();
 		}
 		
 		// Determine the number of minutes since the last date
